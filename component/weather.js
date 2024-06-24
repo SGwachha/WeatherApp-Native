@@ -1,34 +1,75 @@
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+export default function Weather({ stateData }) {
+  const { cityTitle, cityTemp, windSpeed } = stateData;
 
-const Weather = () => {
   return (
     <View style={styles.weatherContainer}>
       <View style={styles.headerContainer}>
-        <MaterialCommunityIcons size={48} name="weather-sunny" color={'#fff'} />
-        <Text style={styles.tempText}>Temperature˚</Text>
+        <Text style={styles.tempText}>Locaition: {cityTitle}</Text>
+       <View style={styles.titleContainer}>
+       <MaterialCommunityIcons
+          size={48}
+          name="weather-sunny"
+          color={"#f7b733"}
+        />
+        <Text style={styles.tempText}>
+          {cityTemp}˚
+        </Text>
+       </View>
+       <View style={styles.titleContainer}>
+       <Feather name="wind" size={24} color="black" />
+       <Text style={styles.tempText}>
+          {windSpeed}kmph
+        </Text>
+       </View>
       </View>
       <View style={styles.bodyContainer}>
         <Text style={styles.title}>So Sunny</Text>
-        <Text style={styles.subtitle}>It hurts my eyes!</Text>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-    weatherContainer:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 50
+  weatherContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    headerContainer:{
-        flex: 1,
-        flexDirection: 'row'
-    }
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerContainer: {
+    alignItems: "center",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  bodyContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  tempText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+    marginLeft: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+  },
 });
-
-export default Weather;
