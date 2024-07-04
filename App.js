@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform, PermissionsAndroid } from "react-native";
 import Weather from "./component/weather";
 import SearchInput from "./component/searchInput";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [cityTitle, setCityTitle] = useState("");
-  const [searchCity, setSearchCity] = useState("Nepal");
+  const [searchCity, setSearchCity] = useState("");
   const [cityTemp, setCityTemp] = useState("");
   const [windSpeed, setWindSpeed] = useState("");
   const [forecastData, setForecastData] = useState([]);
@@ -27,6 +27,50 @@ export default function App() {
   };
 
   useEffect(() => {
+    const getLocation = async () => {
+      try {
+        if (Platform.OS === 'android') {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: "Location Permission",
+              message: "This app needs access to your location to show the weather information.",
+              buttonNeutral: "Ask Me Later",
+              buttonNegative: "Cancel",
+              buttonPositive: "OK"
+            }
+          );
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            setSearchCity("Nepal");
+            return;
+          }
+        }
+
+        navigator?.geolocation?.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position?.coords;
+            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+            const locationData = await res.json();
+            setSearchCity(locationData.city || "Nepal");
+          },
+          (error) => {
+            console.error(error);
+            setSearchCity("Nepal");
+          },
+          { enableHighAccuracy: true, timeout: 2000, maximumAge: 1000 }
+        );
+      } catch (err) {
+        console.error(err);
+        setSearchCity("Nepal");
+      }
+    };
+
+    getLocation();
+  }, []);
+
+  useEffect(() => {
+    if (!searchCity) return;
+
     const fetchCurrentWeather = async () => {
       try {
         const res = await fetch(
@@ -34,9 +78,9 @@ export default function App() {
         );
         const weatherData = await res.json();
         if (res.ok) {
-          setCityTitle(weatherData?.name);
-          setCityTemp(weatherData?.main?.temp);
-          setWindSpeed(weatherData?.wind?.speed);
+          setCityTitle(weatherData.name);
+          setCityTemp(weatherData.main.temp);
+          setWindSpeed(weatherData.wind.speed);
         }
       } catch (err) {
         console.error(err);

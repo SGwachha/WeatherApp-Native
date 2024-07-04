@@ -8,7 +8,7 @@ export default function Weather({ stateData }) {
   return (
     <View style={styles.weatherContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.tempText}>Locaition: {cityTitle}</Text>
+        <Text style={styles.tempText}>Location: {cityTitle}</Text>
        <View style={styles.titleContainer}>
        <MaterialCommunityIcons
           size={48}
@@ -22,7 +22,7 @@ export default function Weather({ stateData }) {
        <View style={styles.titleContainer}>
        <Feather name="wind" size={24} color="black" />
        <Text style={styles.tempText}>
-          {windSpeed}kmph
+          {windSpeed} km/h
         </Text>
        </View>
       </View>
